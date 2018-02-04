@@ -1,0 +1,131 @@
+\documentclass[letterpaper,flegn,12pt]{extarticle}
+\usepackage{tabularx} % extra features for tabular environment
+\usepackage{amsmath}  % improve math presentation
+\usepackage{graphicx} % takes care of graphic including machinery
+\usepackage[margin=1in,letterpaper]{geometry} % decreases margins
+\usepackage{cite} % takes care of citations
+\usepackage[final]{hyperref} % adds hyper links inside the generated pdf file
+\usepackage{enumerate}
+\usepackage{float}
+\usepackage{graphicx}
+\hypersetup{
+	colorlinks=true,       % false: boxed links; true: colored links
+	linkcolor=blue,        % color of internal links
+	citecolor=blue,        % color of links to bibliography
+	filecolor=magenta,     % color of file links
+	urlcolor=blue         
+}
+%++++++++++++++++++++++++++++++++++++++++
+
+
+\begin{document}
+
+\title{COMSW 4731 Computer Vision, Fall 2017
+\\Homework 2}
+\author{Danwen Yang - dy2349@columbia.edu}
+\date{\today}
+\maketitle
+
+\section*{Problem 1}
+Show that the extreme values of moment of inertia$(E)$ for a 2D binary object are given by the eigenvalues of the 2 x 2 matrix:
+\begin{equation}
+\nonumber
+\begin{bmatrix}
+	a & b/2 \\
+	b/2 & c
+\end{bmatrix}
+\end{equation}
+\textbf{1.} where $a, b, c,$ and $E$ are as defined in the lecture notes. \textbf{(3 points)}
+\\ \textbf{Proof}:
+\\ The characteristic equation of the matrix above is
+\begin{equation}
+\nonumber
+\begin{vmatrix}
+	\textbf{A} - \lambda \cdot \textbf{I}
+\end{vmatrix}
+= 
+\begin{vmatrix}
+	\begin{bmatrix}
+		a & b/2 \\
+		b/2 & c
+	\end{bmatrix}
+	-
+	\begin{bmatrix}
+		\lambda & 0 \\
+		0 & \lambda
+	\end{bmatrix}
+\end{vmatrix}
+= 0
+\end{equation}
+\begin{equation}
+\nonumber
+	\begin{vmatrix}
+		a-\lambda & b/2 \\
+		b/2 & c-\lambda
+	\end{vmatrix}
+	= (a-\lambda)(c-\lambda)-(b/2)^2 = 0
+\end{equation}
+\begin{equation}
+\nonumber \lambda^2 -(a+c)\lambda+ac-\frac{b^2}{4} = 0
+\end{equation}
+and the two eigenvalues are 
+\begin{equation}
+\nonumber
+\begin{aligned}
+	\lambda_{1,2} &= \frac{a+c \pm \sqrt{(a+c)^2-4ac+b^2}}{2} \\
+	&= \frac{a+c \pm \sqrt{(a-c)^2+b^2}}{2}
+\end{aligned}
+\end{equation}
+By the definition of $a, b, c,$ and $E$ in the lecture notes.
+\begin{equation}
+\nonumber
+\begin{aligned}
+	E &= a sin^2\theta - b sin\theta cos\theta + c cos^2\theta \\
+	E &= \frac{1}{2}(a+c) - \frac{1}{2}(a-c)cos2\theta - \frac{1}{2}sin2\theta
+\end{aligned}
+\end{equation}
+When $tan2\theta = \dfrac{b}{a-c}$, that is to say $sin2\theta = \pm \dfrac{b}{\sqrt{b^2 + (a-c)^2}}$ and $cos2\theta = \pm \dfrac{a-c}{\sqrt{b^2 + (a-c)^2}}$, $E$ has extreme values. \\
+When $sin2\theta = \dfrac{b}{\sqrt{b^2 + (a-c)^2}}$ and $cos2\theta = \dfrac{a-c}{\sqrt{b^2 + (a-c)^2}}$, $E$ has the minimum value:
+\begin{equation}
+\begin{aligned}
+\nonumber E &= \frac{1}{2}(a+c) - \frac{(a-c)^2}{2\sqrt{b^2+(a-c)^2}} - \frac{b^2}{2\sqrt{b^2+(a-c)^2}} \\
+E &= \frac{1}{2}(a+c) - \frac{\sqrt{b^2+(a-c)^2}}{2}
+\end{aligned}
+\end{equation}
+When $sin2\theta = -\dfrac{b}{\sqrt{b^2 + (a-c)^2}}$ and $cos2\theta = -\dfrac{a-c}{\sqrt{b^2 + (a-c)^2}}$, $E$ has the maximum value:
+\begin{equation}
+\begin{aligned}
+\nonumber E &= \frac{1}{2}(a+c) + \frac{(a-c)^2}{2\sqrt{b^2+(a-c)^2}} + \frac{b^2}{2\sqrt{b^2+(a-c)^2}} \\
+E &= \frac{1}{2}(a+c) + \frac{\sqrt{b^2+(a-c)^2}}{2}
+\end{aligned}
+\end{equation}
+As we can see above, the extreme values of moment of inertia$(E)$ for a 2D binary object are given by the eigenvalues of the matrix.
+~\\
+\\\textbf{2.} Argue that $E$ is real and non-negative, and hence prove that $4ac \geq b^2$. \textbf{(2 points)}
+\\\textbf{Proof}:
+\\By the definition of moment of inertia $E$ for a 2D binary object
+\begin{equation}
+\nonumber E = \int\int_I r^2b(x, y)dxdy
+\end{equation}
+Where $r$ is the perpendicular distance from point $(x, y)$ to a line. Obviously, $r^2$ is real and nonnegative.
+\\ Since the area of a object is 
+\begin{equation}
+\nonumber A = \int\int_I b(x, y)dxdy
+\end{equation}
+which is real and nonnegative.
+So $E$ is real and nonnegative.
+\\ And the minimum value of $E$ is nonnegative
+\begin{equation}
+\begin{aligned}
+\nonumber \frac{1}{2}(a+c) - \frac{\sqrt{b^2+(a-c)^2}}{2} &\geq 0 \\
+(a+c)^2 &\geq b^2 + (a-c)^2 \\
+4ac &\geq b^2 
+\end{aligned}
+\end{equation}
+~\\
+\\\textbf{3.} What kind of object gives $E$ equal to zero ? \textbf{(1 point)}
+\\ \textbf{Solution}:
+\\When the binary object is a straight line, $E$ is zero.
+\\Because $E$ is the integer of the square of the distance from the point $(x, y)$ to a line, if $E$ is zero, then every distance is zero, which means every point is on the line, and the binary object is a straight line.
+
+\end{document}

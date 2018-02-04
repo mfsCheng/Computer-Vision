@@ -1,0 +1,26 @@
+Computer Vision, Fall 2017
+Homework 2
+Danwen Yang - dy2349@columbia.edu
+
+
+# Walkthrough 1
+threshod: From the histogram of 'coins.png', we can find the minimum region between two peaks. Choose the threshod from this region, we can turn the gray-level image into a binary image with only a few errors.
+
+k-remove noise: When k is too small, there will be noise left and erosion will magnify these noise. After trying some times, we can find conducting 4 times dilation is enough to remove all the noise.
+
+k-remove rice: To remove rice, we have to conduct erosion first, which can remove pixels on rices' boundaries. After conducting 10 times erosion, we can find all the rices are eroded. Then we conduct dilation to recover the coins that have been eroded. Finally, we get a clean binary image of coins.
+
+
+# Challenge 1a
+Use the same method in walkthrough1 to determine threshods, we choose 0.5, 0.5, and 0.5 as threshods of 'two_objects,png', 'many_objects_1.png', 'many_objects_2.png'.  
+
+
+# Challenge 1b
+Apart from six required properties, I computed area as the seventh property, because when conducting object recognition, comparing the position of the object center or the orientation does not make sense. However, since we only have to recognize object in the same size, we can use area and roundness as properties compared during object recognition. As for the minimum moment of inertia, at most time, it can be quite large, so the comparision of minimum moment of inertia does not perform well.
+
+# Challenge 1c
+I totally use two properties to conduct object recognition: roundness and area. 
+
+Roundness: Since the roundness is always less than or equal to 1, so it is hard to find a fixed criteria for the difference of two roundness, but we can use the ten percent of the roundness of the origin object as criteria. When the roundness is small, so is the criteria, vice verse. 
+
+Area: Since the difference of the area is caused during the binary process, happening on the boudary, it will be some large when the object has many convexities and concatities, but will not be very large. For the provided images, we can find a fixed criteria(300) to successfully recognize all the objects.

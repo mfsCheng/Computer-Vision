@@ -1,0 +1,29 @@
+Computer Vision, Fall 2017
+Homework 1
+Danwen Yang - dy2349@columbia.edu
+
+In this file you should briefly explain your design decisions, the parameters/constants you used in the algorithms and describe any features that you have incorporated into your programs in addition to what was required.
+
+
+# Walkthrough 2
+In walkthrough2, we aim to read an image and extract its red, green and blue channels separately, along with the original image to generate a 2x2 collage.
+
+(1) Load the image into memory using imread. Put the image and .m file in the same folder, so that we can load the image using is name without full path.
+
+(2) Get red channel from first 'slice' of the original image, green one from the second and blue one from the third and use red_channel, green_channel and blue_channel to represent. 
+
+(3) To create the image of each channel, we first create a new image in the same size as the original one, but set all the pixel to [0,0,0], the set the corresponding ‘slice' to the value of the channel we extract before. Use red_image, green_image and blue_image to represent.
+
+(4) Combine four images together using [... , ... , ...] to arrange images in the same row and using [... ; ... ; ...] to arrange images in the same column. Finally we get the 2x2 collage collage_2x2, and using imwrite to save the result. We can save the image to the file specified by the filename in the current folder.
+
+
+# Walkthrough 3
+In walkthrough 3, we aim to superimpose the "I Love NY" logo on top of a Manhattan scene.
+
+(1) Generate a binary mask of "I Love NY" logo. Fistly, using rgb2gray(img) to convert image into a grayscale image in the size of rows x columns x 1. Then convert the grayscale image to a binary mask. Here, I set the threshod to 0.5 which means if the pixel value > 128, set it to 1, otherwise, set it to 0.
+
+(2) Resize the scene picture and the mask to particular size, using the height of the original one and the target one to get the resize scale.
+
+(3) Make the binary mask with the same size as the scene picture. We first pad the left and right part with 0, then the top and bottom part.
+
+(4) Use the logical of the inverted mask: irresized_mask to find which pixel should be set to red [255, 0, 0]. Here, we change each 'slice' of the image: red_channel, green_channel, blue_channel and combine them together to get the final image.

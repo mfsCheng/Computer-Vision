@@ -1,0 +1,44 @@
+Computer Vision, Fall 2017
+Homework 3
+Danwen Yang - dy2349@columbia.edu
+
+
+# Walkthrough 1
+Sobel-thresh: I set the thresh for sobel edge detector to 0.11, although the detected edge of the pen is not quite compelete, those "weak" edges of the backgroung texture are igored, leaving the edges of the main object in the image. When the thresh is too too large, a few edges are accepted, from with we can only get littile information.
+
+Canny-thresh: Canny edge detector uses two thresholds. If a pixel gradient is larger than the high threshold, the pixel is considered as an edge. If a pixel gradient is smaller than the low threshold the pixel is ignored. If a pixel gradient is between the high and low thresh, we have to examine whether it is connected to a pixel that is considered as an edge to determine it is an edge or not. I set the threshold to [0.04, 0.17], with which the edges of the pen and notebook remain, including some details, and strong edges of backgroung texture also remain, ignoring other weak or spurious edges.
+
+
+# Challenge 1a
+I choose canny edge detector here because compared with sobel edge detector, canny applies a low pass filter to supress noise first, and uses non-maximum supression to pick out the best pixel for edges such that thin lines remain. Also, it uses two threshes to find the strong edges and remove spurious edges. To find the best thresh, I first try several threshes with large range, then pick up the best one and try threshes with smaller range within it. Finally, I set the threshes to [0.012, 0.03] for 'hough_1.png' , [0.0155, 0.1] for 'hough_2.png', [0.03, 0.08]  for 'hough_3.png'. 
+
+
+# Challenge 1b
+θ: I define θ to −π/2 to π/2 and set the theta_num_bins to 180 which means there are 180 bins and the distance between every two adjacent bins is π/180.
+ρ: I define ρ to the  -diagonal of the image to diagonal of the image and the theta_num_bins 1600. 1600 comes from the twice of the diagonal of three provided images. Actually, I ceil the ceil the distance between every two djancent bins to an integer so the bins may not be exact 1600 and the range varies a little considering the size of images. 
+The reason why I choose above values is from images provided, I observed the distances between some lines are very small, the directions of the lines vary in big range. Therefore, the distance of between every two adjacent ρ bins is 1 and the range of θ is π.
+
+The voting scheme I use is for every pixel (x, y) that equals 1 in the edge image, for every possible θ_k, use the equation ρ = xcosθ + ysinθ to calculate the ρ_k and round it, then vote for the bin (ρ_k, θ_k) in the two dimentional bins matrix whose axis are θ and ρ. Since ρ may be negative, so we calculate its index of the ρ axis then vote.
+In the function generateHoughAccumulator, variables have following meanings:
+#D: the diagonal of the image
+#dist: the distance between every two adjacent ρ bins
+#len_rh: the real number of ρ bins
+#[x, y]: indices of pixel that equals to 1
+#cos_value / sin_value: one dimensional matrix to store cos / sin value of each possible θ so that we do not have to calculate again and again in the loop
+
+
+# Challenge 1c
+A strong line consists of more pixels when compared with weak line, so to find strong lines we have to find max values in the voting matrix. From the visualization of the voting matrix, we can see that these max values are the intersections of many sinusoids, around which the values of pixels are also large. So to igore these spurious max values, every time we find a max value, we have to set its neighours to 0, then find the next max value.
+By observing the provided images, I set the number of max values to 20 and the size of neighbours to size(hough_img)/60. Also we use hough_threshold to remove spurious max values. I set hough_threshold to 0.22*max(hough_img(:)) by experimenting.
+In the function lineFinder, variables have following meanings:
+numpeaks: the number of max values we want to find
+neighbour: a vector containing the the range of x axis and y axis
+peaks: max values we find
+
+
+# Challenge 1d
+After finding the stong lines, we have to find corresponding segments to them. Each line has a unique pair of (ρ, θ), so to find segments lie on this line, we first scan through the input edge image again to find pixels that vote for the (ρ, θ) when generating the accumulator. These pixels are pixels lying on the line. To find the start point and end point of the segment, we set a threshold of the minimal gap between two consecutive segments. If the distance between two points is greater then the minimal gap, we define one of them as the end point after last segment and the other as the start point of the next segment. Now we get the start points and end points of segments and we have to ignore some segments that are too short to be a strong segment. 
+In the function lineSegmentFinder, variables have following meanings:
+gap: the minimal gap between two consecutive segments
+min_len: the minimal length of a segment, which I set to 12
+points: the start points and end points we find associated with one pair of (ρ, θ), which I set to 20

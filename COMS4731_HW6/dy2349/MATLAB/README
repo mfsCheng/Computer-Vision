@@ -1,0 +1,20 @@
+Computer Vision, Fall 2017
+Homework 6
+Danwen Yang - dy2349@columbia.edu
+
+
+# Challenge 1
+To compute the optical flow, we first determine the grid spacing. Considering the size of the image and the computational convenience, I set the grid spacing to 16 in row and column. Then we compute the optical flow of the centeral point of each grid. For each centeral point, we take a template around it in the fisrt image and a search window around it in the second image. We use the normxcorr2 function to compute the normalized cross-correlation of the template and search window. We find the peak in cross-correlation and this point in the second image is assumed to be the corresponding point of the point of the first image. Since normxcorr2 adds paddings and the result of the boundry is not reliable, when finding the peak, we should remove the boundry area. For the peak point we find, we should subtract the added padding. Suppose the point in the first image is (x_0, y_0) and its corresponding point in the second image is (x_1, y_1), then the optical flow is (x_1-x_0, y_1-y_0).
+
+
+# Challenge 2
+We use the color histogram beased tracking to implement the object tracking system. We first choose a template and compute its color map and color histogram. In the next image, we determine a search window around the object in the previous image and compute the color histogram of every possible region in the same size as the template. We vectorize the data and use normxcorr2 to find the one which has the maximum normalized cross-correlation with the template. Then we update the location of the target and execute the same process in the next image. The tracking performance depends greatly on the template that we choose. The template should not be large and should include as less background as possible.
+For the walking person, I set the parameters as follows:
+	tracking_params.rect = [190 60 35 125]
+	tracking_params.search_half_window_size = [7, 7]
+	tracking_params.bin_n = 128
+For the rolling ball:
+	tracking_params.rect = [190 60 35 125]
+	tracking_params.search_half_window_size = [10, 11]
+	tracking_params.bin_n = 8
+

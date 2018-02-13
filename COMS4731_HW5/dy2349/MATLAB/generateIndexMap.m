@@ -1,0 +1,17 @@
+function index_map = generateIndexMap(gray_stack, w_size)
+
+focus_measure = zeros(size(gray_stack));
+
+H_ave = fspecial('average');
+for i = 1 : size(gray_stack, 3)
+    gray_stack(:, :, i) = imfilter(gray_stack(:, :, i), H_ave, 'replicate','conv');
+end
+H = [-1 2 -1];
+for i = 1 : size(gray_stack, 3)  
+    Lx = imfilter(gray_stack(:, :, i), H, 'replicate', 'conv');
+    Ly = imfilter(gray_stack(:, :, i), H', 'replicate', 'conv');
+    FM = abs(Lx) + abs(Ly);
+    focus_measure(:, :, i) = FM;
+end
+[val, index_map] = max(focus_measure, [], 3);
+end

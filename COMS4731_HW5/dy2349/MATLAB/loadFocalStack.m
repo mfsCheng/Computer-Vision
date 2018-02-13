@@ -1,0 +1,19 @@
+function [rgb_stack, gray_stack] = loadFocalStack(focal_stack_dir)
+
+files = dir('./stack/*.jpg');
+num = length(files);
+path = ['./' focal_stack_dir '/' getfield(files(1), 'name')];
+
+img = imread(path);
+[m, n, k] = size(img);
+rgb_stack = zeros(m, n, 3*num);
+gray_stack = zeros(m, n, num);
+for i = 1:num
+    path = ['./' focal_stack_dir '/' getfield(files(i), 'name')];
+    img = imread(path);
+    rgb_stack(:,:,(i-1)*3+1 : i*3) = img;
+    gray_img = rgb2gray(img);
+    gray_stack(:,:,i) =  gray_img;  
+end
+
+end

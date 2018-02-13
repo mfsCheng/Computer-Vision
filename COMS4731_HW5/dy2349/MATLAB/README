@@ -1,0 +1,29 @@
+Computer Vision, Fall 2017
+Homework 4
+Danwen Yang - dy2349@columbia.edu
+
+
+# Challenge 1a
+Firstly, we have to caputure fours points in the original image and four corresponding points in the destination image. Construct the equation of four pairs of points to compute homography. 
+Find the smallest eigenvalue of D and its corresponding eigenvector, rearrange it to a matrix of size 3x3.
+
+
+# Challenge 1b
+To warp the image, we first find four pairs of corrsponding points in background and portrait. Here we can use four corners as the corresponding points and compute the homography. To make sure every pixel of the backgroung image is filled, we use the backward wraping. For every position (x, y) of the backgroung image, we compute its corresponding position (m, n) in portrait image, if the position is in the portrait, set (x, y) to the value of (m, n), and set the point (x, y) of mask to 1. 
+
+
+# Challenge 1c
+To address the problem of outliers, we use RANSAC to robustly compute homography. Among the correspondin points of source image and destination image detected using SIFT, we randomly choose four pairs of points (since homography has 8 degrees of freefom). Then we compute the homography using there four matching points. For all the points of source image detected by SIFT, compute its corresponding points using the homography, if the distance between the detected points and the computed points of the destination image are smaller than the acceptable alignment error, accept them as inliers. Repeat the process and choose the homography that has the largest number of inliers.
+By experiments, I set the number of interactions to 15 and the acceptable alignment error to 10.
+
+
+# Challenge 1d
+Blend: Since using the mask shown in the slide will influence the borders that should be retained, we find the overlap of two images and create a mask for this part. For the image in the left, the first column of the overlap mask is 1 and the last column of the overlap mask is 0 and the mask decreases from left two right. For the right image, the first column of the overlap mask is 0 and the last column of the overlap mask is 1 and the mask increases from left to right. Then nomarlize the original mask and replace the overlapped part with the overlap mask. 
+Overlay: We first copy image1 to the destination image when mask1 applies. Then use the inverse of mask2 to set the part that image1 and image2 overlap to 0. Finally, copy the image2 to the destination image when mask2 applies. And we will get the destination that image2 over image1.
+
+
+# Challenge 1e
+To stitch the imput images into one mosaic, we can first stitch first two adjacent images, getting the mosaic one and stitch it with next image. For every stitching process, we use RANSAC to find the robust homography, then compute the correponding points of corners of the source image to determine the bounds in the destination image. Since the bounds may exceed the destination image, we have to adjust the size of the destination image. At first, I use the updated destination image corners and source image corners to compute the final homography. But sometimes the result goes wrong. So I using RANSAC to generate the new homography. Now, we can use the warping method in part b and blend method in part d to generate the mosaic image. For next iteration, set the mosaic image as the destination image. 
+
+# Challenge 1f
+I took three photos of CU campus from top of the bulter library. And using the stitch function to create the panorama.
